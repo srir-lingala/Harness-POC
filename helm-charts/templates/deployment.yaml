@@ -1,40 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.servicename }}-svc
+  name: nginxsvc
   labels:
-    app: nginx
+    chart: nginx
 spec:
-  type: {{ .Values.svctype }}
+  type: ClusterIP
   ports:
-  - port: {{ .Values.port }}
+  - port: 80
+    targetPort: 8080
   selector:
-    app: nginx
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ .Values.name }}
-  namespace: {{ .Values.namespace }}
-  labels:
-    app: nginx
-spec:
-  replicas: {{ .Values.replicacount }}
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: stackdriver-agent
-        image: gcr.io/stackdriver-agents/stackdriver-agent:latest
-        env:
-        - name: "STACKDRIVER_API_KEY"
-          value: {{ .Values.stackapikey }}"
-      - name: nginx
-        image: {{ .Values.image }}
-        ports:
-        - containerPort: {{ .Values.port }}
+    app: nginxsvc
