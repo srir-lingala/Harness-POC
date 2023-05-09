@@ -15,4 +15,4 @@ template:
         - helm-gke-delegate-playpen-primary-region
     timeout: 10m
   identifier: Canary_Deploy
-  versionLabel: V1.0
+  versionLabel: V1.2
