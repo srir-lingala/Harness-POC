@@ -1,0 +1,14 @@
+inputSet:
+  pipeline:
+    identifier: KubeDeploy
+    variables:
+      - name: HELM_REPO
+        type: String
+        value: Harness-POC
+      - name: RELEASE_TAG
+        type: String
+        value: release_v1.3
+  name: IP1
+  identifier: IP1
+  orgIdentifier: default
+  projectIdentifier: nexus
