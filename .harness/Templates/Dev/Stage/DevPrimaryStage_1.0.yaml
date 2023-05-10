@@ -1,0 +1,35 @@
+template:
+  name: DevPrimaryStage
+  type: Stage
+  projectIdentifier: nexus
+  orgIdentifier: default
+  spec:
+    type: Deployment
+    spec:
+      deploymentType: Kubernetes
+      execution:
+        steps:
+          - step:
+              name: Deploy Primary
+              identifier: K8sCanaryDeploy_1
+              template:
+                templateRef: Canary_Deploy
+                versionLabel: V1.0
+        rollbackSteps: []
+      service:
+        serviceRef: nginx_primary
+      environment:
+        environmentRef: PlaypenNonProdPrimary
+        deployToAll: false
+        infrastructureDefinitions:
+          - identifier: PrimaryPre
+    failureStrategies:
+      - onFailure:
+          errors:
+            - AllErrors
+          action:
+            type: StageRollback
+    delegateSelectors:
+      - helm-gke-delegate-playpen-primary-region
+  identifier: DevPrimaryStage
+  versionLabel: "1.0"
