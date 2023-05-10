@@ -9,35 +9,9 @@ pipeline:
         - stage:
             name: Deploy to Primary
             identifier: Deploy_to_Primary
-            description: ""
-            type: Deployment
-            spec:
-              deploymentType: Kubernetes
-              execution:
-                steps:
-                  - step:
-                      name: Deploy Primary
-                      identifier: K8sCanaryDeploy_1
-                      template:
-                        templateRef: Canary_Deploy
-                        versionLabel: V1.0
-                rollbackSteps: []
-              service:
-                serviceRef: nginx_primary
-              environment:
-                environmentRef: PlaypenNonProdPrimary
-                deployToAll: false
-                infrastructureDefinitions:
-                  - identifier: PrimaryPre
-            tags: {}
-            failureStrategies:
-              - onFailure:
-                  errors:
-                    - AllErrors
-                  action:
-                    type: StageRollback
-            delegateSelectors:
-              - helm-gke-delegate-playpen-primary-region
+            template:
+              templateRef: DevPrimaryStage
+              versionLabel: "1.0"
         - stage:
             name: Deploy to Secondary Region
             identifier: Deploy_to_Secondary_Region
