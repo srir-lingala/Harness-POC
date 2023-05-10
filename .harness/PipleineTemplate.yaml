@@ -1,0 +1,211 @@
+pipeline:
+  name: HelmDeployment
+  identifier: HelmDeployment
+  projectIdentifier: nexus
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - parallel:
+        - stage:
+            name: Deploy Nginx to Primary
+            identifier: Deploy_to_Primary_Region
+            description: ""
+            type: Deployment
+            spec:
+              deploymentType: NativeHelm
+              service:
+                serviceRef: HelmNginx
+              execution:
+                steps:
+                  - step:
+                      type: HelmDeploy
+                      name: Deploy nginx
+                      identifier: Deploy_nginx
+                      spec:
+                        skipDryRun: false
+                        ignoreReleaseHistFailStatus: false
+                        delegateSelectors:
+                          - helm-gke-delegate-playpen-primary-region
+                      timeout: 10m
+                      failureStrategies: []
+                  - step:
+                      type: Verify
+                      name: Verify_1
+                      identifier: Verify_1
+                      spec:
+                        isMultiServicesOrEnvs: false
+                        type: Rolling
+                        monitoredService:
+                          type: Default
+                          spec: {}
+                        spec:
+                          sensitivity: HIGH
+                          duration: 5m
+                          deploymentTag: <+artifacts.primary.tag>
+                      timeout: 2h
+                      failureStrategies:
+                        - onFailure:
+                            errors:
+                              - Verification
+                            action:
+                              type: ManualIntervention
+                              spec:
+                                timeout: 2h
+                                onTimeout:
+                                  action:
+                                    type: StageRollback
+                        - onFailure:
+                            errors:
+                              - Unknown
+                            action:
+                              type: ManualIntervention
+                              spec:
+                                timeout: 2h
+                                onTimeout:
+                                  action:
+                                    type: Ignore
+                rollbackSteps: []
+              environment:
+                environmentRef: playpen
+                deployToAll: false
+                infrastructureDefinitions:
+                  - identifier: DevPrimaryDeloyns
+            tags: {}
+            failureStrategies:
+              - onFailure:
+                  errors:
+                    - AllErrors
+                  action:
+                    type: StageRollback
+        - stage:
+            name: Deploy Nginx to Secondary
+            identifier: Deploy_Nginx_to_Secondary
+            description: ""
+            type: Deployment
+            spec:
+              deploymentType: NativeHelm
+              service:
+                useFromStage:
+                  stage: Deploy_to_Primary_Region
+              environment:
+                environmentRef: playpensecondary
+                deployToAll: false
+                infrastructureDefinitions:
+                  - identifier: DevSecondaryDeployns
+              execution:
+                steps:
+                  - step:
+                      name: Helm Deployment
+                      identifier: helmDeployment
+                      type: HelmDeploy
+                      timeout: 10m
+                      spec:
+                        skipDryRun: false
+                rollbackSteps:
+                  - step:
+                      name: Helm Rollback
+                      identifier: helmRollback
+                      type: HelmRollback
+                      timeout: 10m
+                      spec: {}
+            tags: {}
+            failureStrategies:
+              - onFailure:
+                  errors:
+                    - AllErrors
+                  action:
+                    type: StageRollback
+    - parallel:
+        - stage:
+            name: Deploy Istio to Primary
+            identifier: Deploy_Istio_to_Multi_regions
+            description: ""
+            type: Deployment
+            spec:
+              deploymentType: NativeHelm
+              service:
+                serviceRef: HelmNginx
+              execution:
+                steps:
+                  - step:
+                      name: Helm Deployment Istio
+                      identifier: Helm_Deployment_Istio
+                      type: HelmDeploy
+                      timeout: 10m
+                      spec:
+                        skipDryRun: false
+                        ignoreReleaseHistFailStatus: false
+                        delegateSelectors:
+                          - helm-gke-delegate-playpen-primary-region
+                      failureStrategies: []
+                rollbackSteps:
+                  - step:
+                      name: Helm Rollback
+                      identifier: helmRollback
+                      type: HelmRollback
+                      timeout: 10m
+                      spec: {}
+              environment:
+                environmentRef: PlaypenPrimary
+                deployToAll: false
+                infrastructureDefinitions:
+                  - identifier: IstioPrimary
+            tags: {}
+            failureStrategies:
+              - onFailure:
+                  errors:
+                    - AllErrors
+                  action:
+                    type: StageRollback
+        - stage:
+            name: Deploy Istio to Secondary
+            identifier: Deploy_Istio_to_Secondary
+            description: ""
+            type: Deployment
+            spec:
+              deploymentType: NativeHelm
+              service:
+                useFromStage:
+                  stage: Deploy_Istio_to_Multi_regions
+              environment:
+                environmentRef: PlaypenPrimary
+                deployToAll: false
+                infrastructureDefinitions:
+                  - identifier: IstioSecondary
+              execution:
+                steps:
+                  - step:
+                      name: Helm Deployment
+                      identifier: helmDeployment
+                      type: HelmDeploy
+                      timeout: 10m
+                      spec:
+                        skipDryRun: false
+                        ignoreReleaseHistFailStatus: false
+                        delegateSelectors:
+                          - helm-gke-delegate-playpen-secondary-region
+                      failureStrategies: []
+                rollbackSteps:
+                  - step:
+                      name: Helm Rollback
+                      identifier: helmRollback
+                      type: HelmRollback
+                      timeout: 10m
+                      spec: {}
+            tags: {}
+            failureStrategies:
+              - onFailure:
+                  errors:
+                    - AllErrors
+                  action:
+                    type: StageRollback
+  allowStageExecutions: true
+  variables:
+    - name: HELM_REPO
+      type: String
+      description: ""
+      value: <+input>
+    - name: RELEASE_TAG
+      type: String
+      description: ""
+      value: <+input>
