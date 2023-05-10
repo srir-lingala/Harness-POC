@@ -1,0 +1,14 @@
+pipeline:
+  name: KubeDeploy
+  identifier: KubeDeploy
+  projectIdentifier: nexus
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - parallel:
+        - stage:
+            name: Deploy to Primary
+            identifier: Deploy_to_Primary
+            template:
+              templateRef: DevPrimaryStage
+              versionLabel: "1.0"
