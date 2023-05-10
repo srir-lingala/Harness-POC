@@ -12,3 +12,12 @@ pipeline:
             template:
               templateRef: DevPrimaryStage
               versionLabel: "1.0"
+  variables:
+    - name: HELM_REPO
+      type: String
+      description: ""
+      value: <+input>
+    - name: RELEASE_TAG
+      type: String
+      description: ""
+      value: <+input>
