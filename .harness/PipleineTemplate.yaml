@@ -1,6 +1,6 @@
 pipeline:
-  name: HelmDeployment
-  identifier: HelmDeployment
+  name: HelmDeployments
+  identifier: PipelineTemplate
   projectIdentifier: nexus
   orgIdentifier: default
   tags: {}
