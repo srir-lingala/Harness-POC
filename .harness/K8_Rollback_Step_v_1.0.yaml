@@ -1,0 +1,12 @@
+template:
+  name: K8_Rollback_Step
+  type: Step
+  projectIdentifier: nexus
+  orgIdentifier: default
+  spec:
+    type: K8sRollingRollback
+    spec:
+      pruningEnabled: false
+    timeout: 10m
+  identifier: K8_Rollback_Step
+  versionLabel: v_1.0
