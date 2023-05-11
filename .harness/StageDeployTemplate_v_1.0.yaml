@@ -1,0 +1,38 @@
+template:
+  name: Stage-Deploy-Template
+  type: Stage
+  projectIdentifier: nexus
+  orgIdentifier: default
+  spec:
+    type: Deployment
+    spec:
+      deploymentType: Kubernetes
+      execution:
+        steps:
+          - step:
+              type: K8sCanaryDeploy
+              name: Deploy to Secondary
+              identifier: Deploy_to_Secondary
+              spec:
+                skipDryRun: false
+                instanceSelection:
+                  type: Count
+                  spec:
+                    count: 1
+              timeout: 10m
+        rollbackSteps: []
+      service:
+        serviceRef: nginx_primary
+      environment:
+        environmentRef: PlayPenNonProdSecondary
+        deployToAll: false
+        infrastructureDefinitions:
+          - identifier: SecondaryPre
+    failureStrategies:
+      - onFailure:
+          errors:
+            - AllErrors
+          action:
+            type: StageRollback
+  identifier: StageDeployTemplate
+  versionLabel: v_1.0
