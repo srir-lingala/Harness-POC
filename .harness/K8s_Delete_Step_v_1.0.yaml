@@ -1,0 +1,16 @@
+template:
+  name: K8s_Delete_Step
+  type: Step
+  projectIdentifier: nexus
+  orgIdentifier: default
+  spec:
+    type: K8sDelete
+    spec:
+      deleteResources:
+        type: ResourceName
+        spec:
+          resourceNames:
+            - nginx
+    timeout: 10m
+  identifier: K8s_Delete_Step
+  versionLabel: v_1.0
