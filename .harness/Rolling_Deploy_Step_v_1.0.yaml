@@ -1,0 +1,13 @@
+template:
+  name: Rolling_Deploy_Step
+  type: Step
+  projectIdentifier: nexus
+  orgIdentifier: default
+  spec:
+    type: K8sRollingDeploy
+    spec:
+      skipDryRun: false
+      pruningEnabled: false
+    timeout: 10m
+  identifier: Rolling_Deploy_Step
+  versionLabel: v_1.0
