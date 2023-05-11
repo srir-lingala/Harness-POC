@@ -1,0 +1,16 @@
+template:
+  name: Canary_Deploy_Step
+  type: Step
+  projectIdentifier: nexus
+  orgIdentifier: default
+  spec:
+    type: K8sCanaryDeploy
+    spec:
+      skipDryRun: false
+      instanceSelection:
+        type: Count
+        spec:
+          count: 1
+    timeout: 10m
+  identifier: Canary_Deploy_Step
+  versionLabel: v1_1.0
