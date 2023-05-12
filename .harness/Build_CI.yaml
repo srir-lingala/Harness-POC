@@ -14,7 +14,6 @@ pipeline:
     - stage:
         name: Build
         identifier: Build
-        description: ""
         type: CI
         spec:
           cloneCodebase: true
@@ -29,14 +28,36 @@ pipeline:
           execution:
             steps:
               - step:
-                  type: BuildAndPushGCR
-                  name: BuildAndPushGCR_1
-                  identifier: BuildAndPushGCR_1
+                  type: Run
+                  name: Run_1
+                  identifier: Run_1
                   spec:
                     connectorRef: GCRPlaypen
-                    host: eu.gcr.io
-                    projectID: playpen-r2tsls
-                    imageName: harness-build
-                    tags:
-                      - eu.gcr.io/playpen-r2tsls/<+pipeline.name>:<+pipeline.properties.ci.codebase.build.build.spec.number>
-                    dockerfile: ./BuildApp/Dockerfile
+                    image: docker:dind
+                    shell: Sh
+                    command: |
+                      while ! docker ps; do 
+                      echo "docker not present"
+                      done 
+                      echo "docker ready to use"
+              - step:
+                  type: Run
+                  name: Build and Push
+                  identifier: Build_and_Push
+                  spec:
+                    connectorRef: GCRPlaypen
+                    image: google/cloud-sdk:latest
+                    shell: Sh
+                    command: |-
+                      echo <+secrets.getValue("account.GOOGLE_CREDENTIALS_BASE64")> | base64 -d > tmp.json
+
+                      glcoud auth activate-service-account --key-file=tmp.json
+
+                      gcloud auth configure-docker europe-west2-docker.pkg.dev -q
+
+                      docker build . -t europe-west2-docker.pkg.dev/playpen-rstsls/harness/nodejs:v1
+
+                      docker image push europe-west2-docker.pkg.dev/playpen-rstsls/harness/nodejs:v1
+          sharedPaths:
+            - /var/run
+            - /var/lib/docker
