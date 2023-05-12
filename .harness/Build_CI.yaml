@@ -38,5 +38,5 @@ pipeline:
                     projectID: playpen-r2tsls
                     imageName: harness-build
                     tags:
-                      - <+pipeline.name>.<+pipeline.properties.ci.codebase.build.build.spec.number>
+                      - eu.gcr.io/<+pipeline.name>.<+pipeline.properties.ci.codebase.build.build.spec.number>
                     dockerfile: ./BuildApp/Dockerfile
