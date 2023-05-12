@@ -1,0 +1,41 @@
+pipeline:
+  name: Build_CI
+  identifier: Build_CI
+  projectIdentifier: nexus
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: sritest
+        repoName: Harness-POC
+        build: <+input>
+  stages:
+    - stage:
+        name: Build
+        identifier: Build
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: Primarycluster
+              namespace: harness-deploy
+              automountServiceAccountToken: true
+              nodeSelector: {}
+              os: Linux
+          execution:
+            steps:
+              - step:
+                  type: BuildAndPushGCR
+                  name: BuildAndPushGCR_1
+                  identifier: BuildAndPushGCR_1
+                  spec:
+                    connectorRef: GCRPlaypen
+                    host: eu.gcr.io
+                    projectID: playpen-r2tsls
+                    imageName: harness-build
+                    tags:
+                      - <+pipeline.name>.<+pipeline.properties.ci.codebase.build.build.spec.number>
