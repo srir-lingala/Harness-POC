@@ -49,7 +49,7 @@ pipeline:
                     image: google/cloud-sdk:latest
                     shell: Sh
                     command: |-
-                      echo <+secrets.getValue("GCP-Playpen")> | base64 -d > tmp.json
+                      echo <+secrets.getValue("GCPPlaypen")> | base64 -d > tmp.json
                       glcoud auth activate-service-account --key-file=tmp.json
 
                       gcloud auth configure-docker europe-west2-docker.pkg.dev -q
