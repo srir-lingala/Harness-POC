@@ -29,7 +29,7 @@ pipeline:
             steps:
               - step:
                   type: Run
-                  name: Run_1
+                  name: Docker Check
                   identifier: Run_1
                   spec:
                     connectorRef: GCRPlaypen
