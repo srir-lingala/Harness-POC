@@ -33,7 +33,7 @@ pipeline:
                   identifier: Run_1
                   spec:
                     connectorRef: GCRPlaypen
-                    image: docker:dind
+                    image: europe-docker.pkg.dev/playpen-r2tsls/harness/docker:dind
                     shell: Sh
                     command: |
                       while ! docker ps; do 
