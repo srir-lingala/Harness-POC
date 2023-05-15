@@ -38,7 +38,7 @@ pipeline:
                     imageName: harness/py-app
                     tags:
                       - <+pipeline.properties.ci.codebase.build.build.spec.number>
-                    dockerfile: Dockerfile
+                    dockerfile: BuildApp/Dockerfile
                     context: BuildApp
           sharedPaths:
             - /var/run
