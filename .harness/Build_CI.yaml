@@ -37,7 +37,7 @@ pipeline:
             steps:
               - step:
                   type: K8sCanaryDeploy
-                  name: K8sCanaryDeploy_1
+                  name: App deployment to Primary Region
                   identifier: K8sCanaryDeploy_1
                   spec:
                     skipDryRun: false
@@ -46,6 +46,7 @@ pipeline:
                       spec:
                         count: 1
                   timeout: 10m
+                  failureStrategies: []
             rollbackSteps:
               - step:
                   name: Canary Delete
