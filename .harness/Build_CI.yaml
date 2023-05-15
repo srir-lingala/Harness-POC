@@ -53,11 +53,11 @@ pipeline:
                       echo <+secrets.getValue("GCPPlaypen")> | base64 -d > tmp.json
                       glcoud auth activate-service-account --key-file=tmp.json
 
-                      gcloud auth configure-docker eu.gcr.io/playpen-r2tsls -q
+                      gcloud auth configure-docker europe-docker.pkg.dev/playpen-r2tsls -q
 
-                      docker build . -t eu.gcr.io/playpen-r2tsls/nodejs:latest
+                      docker build . -t europe-docker.pkg.dev/playpen-r2tsls/harness/nodejs:latest
 
-                      docker image push eu.gcr.io/playpen-r2tsls/nodejs:latest
+                      docker image push europe-docker.pkg.dev/playpen-r2tsls/harness/nodejs:latest
           sharedPaths:
             - /var/run
             - /var/lib/docker
