@@ -39,7 +39,7 @@ pipeline:
                       type: Count
                       spec:
                         count: 1
-                  timeout: 5m
+                  timeout: 10m
                   failureStrategies: []
             rollbackSteps:
               - step:
