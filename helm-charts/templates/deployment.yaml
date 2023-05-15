@@ -3,13 +3,13 @@ kind: Service
 metadata:
   name: {{ .Values.servicename }}-svc
   labels:
-    app: nginx
+    app: py-app
 spec:
   type: {{ .Values.svctype }}
   ports:
   - port: {{ .Values.port }}
   selector:
-    app: nginx
+    app: py-app
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -17,19 +17,19 @@ metadata:
   name: {{ .Values.name }}
   namespace: {{ .Values.namespace }}
   labels:
-    app: nginx
+    app: py-app
 spec:
   replicas: {{ .Values.replicacount }}
   selector:
     matchLabels:
-      app: nginx
+      app: py-app
   template:
     metadata:
       labels:
-        app: nginx
+        app: py-app
     spec:
       containers:
-      - name: nginx
+      - name: py-app
         image: {{ .Values.image }}
         ports:
         - containerPort: {{ .Values.port }}
