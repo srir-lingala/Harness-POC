@@ -1,7 +1,7 @@
-name: nginx-deployment
+name: python-app
 namespace: default
-servicename: nginx
+servicename: py-app
 port: 80
 replicacount: 3
-image: nginx:1.14.2
+image: <+artifact.image>
 svctype: LoadBalancer
