@@ -35,9 +35,11 @@ pipeline:
                     connectorRef: GCRPlaypen
                     host: europe-docker.pkg.dev
                     projectID: playpen-r2tsls
-                    imageName: harness/nginx
+                    imageName: harness/py-app
                     tags:
-                      - v1.0
+                      - <+pipeline.properties.ci.codebase.build.build.spec.number>
+                    dockerfile: Dockerfile
+                    context: BuildApp
           sharedPaths:
             - /var/run
             - /var/lib/docker
