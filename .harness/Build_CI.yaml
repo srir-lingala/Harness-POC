@@ -54,9 +54,9 @@ pipeline:
 
                       gcloud auth configure-docker eu.gcr.io/playpen-r2tsls -q
 
-                      docker build . -t eu.gcr.io/playpen-r2tsls/harness/nodejs:latest
+                      docker build . -t eu.gcr.io/playpen-r2tsls/nodejs:latest
 
-                      docker image push eu.gcr.io/playpen-r2tsls/harness/nodejs:latest
+                      docker image push eu.gcr.io/playpen-r2tsls/nodejs:latest
           sharedPaths:
             - /var/run
             - /var/lib/docker
