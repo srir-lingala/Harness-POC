@@ -1,5 +1,5 @@
 pipeline:
-  name: Deploy Build
+  name: Deploy App
   identifier: Build_CI
   projectIdentifier: nexus
   orgIdentifier: default
