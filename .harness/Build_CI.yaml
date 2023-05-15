@@ -1,46 +1,89 @@
 pipeline:
-  name: Build_CI
+  name: Deploy Build
   identifier: Build_CI
   projectIdentifier: nexus
   orgIdentifier: default
   tags: {}
-  properties:
-    ci:
-      codebase:
-        connectorRef: sritest
-        repoName: Harness-POC
-        build: <+input>
   stages:
     - stage:
-        name: Build
-        identifier: Build
-        type: CI
+        name: Deploy to Primary
+        identifier: Deploy_to_Primary
+        description: ""
+        type: Deployment
         spec:
-          cloneCodebase: true
-          infrastructure:
-            type: KubernetesDirect
-            spec:
-              connectorRef: Primarycluster
-              namespace: harness-deploy
-              automountServiceAccountToken: true
-              nodeSelector: {}
-              os: Linux
+          deploymentType: Kubernetes
+          service:
+            serviceRef: PythonAppGar
+            serviceInputs:
+              serviceDefinition:
+                type: Kubernetes
+                spec:
+                  artifacts:
+                    primary:
+                      primaryArtifactRef: <+input>
+                      sources: <+input>
+          environment:
+            environmentRef: playpen
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: DevPrimary
+                inputs:
+                  identifier: DevPrimary
+                  type: KubernetesDirect
+                  spec:
+                    connectorRef: <+input>
+                    namespace: <+input>
           execution:
             steps:
+              - stepGroup:
+                  name: Canary Deployment
+                  identifier: canaryDepoyment
+                  steps:
+                    - step:
+                        name: Canary Deployment
+                        identifier: canaryDeployment
+                        type: K8sCanaryDeploy
+                        timeout: 10m
+                        spec:
+                          instanceSelection:
+                            type: Count
+                            spec:
+                              count: 1
+                          skipDryRun: false
+                    - step:
+                        name: Canary Delete
+                        identifier: canaryDelete
+                        type: K8sCanaryDelete
+                        timeout: 10m
+                        spec: {}
+              - stepGroup:
+                  name: Primary Deployment
+                  identifier: primaryDepoyment
+                  steps:
+                    - step:
+                        name: Rolling Deployment
+                        identifier: rollingDeployment
+                        type: K8sRollingDeploy
+                        timeout: 10m
+                        spec:
+                          skipDryRun: false
+            rollbackSteps:
               - step:
-                  type: BuildAndPushGCR
-                  name: BuildAndPushGCR_1
-                  identifier: BuildAndPushGCR_1
-                  spec:
-                    connectorRef: GCRPlaypen
-                    host: europe-docker.pkg.dev
-                    projectID: playpen-r2tsls
-                    imageName: harness/py-app
-                    tags:
-                      - v1.0
-                    dockerfile: BuildApp/Dockerfile
-                    context: BuildApp
-          sharedPaths:
-            - /var/run
-            - /var/lib/docker
-        variables: []
+                  name: Canary Delete
+                  identifier: rollbackCanaryDelete
+                  type: K8sCanaryDelete
+                  timeout: 10m
+                  spec: {}
+              - step:
+                  name: Rolling Rollback
+                  identifier: rollingRollback
+                  type: K8sRollingRollback
+                  timeout: 10m
+                  spec: {}
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
