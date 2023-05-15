@@ -33,10 +33,10 @@ pipeline:
                   identifier: Run_1
                   spec:
                     connectorRef: GCRPlaypen
-                    image: europe-docker.pkg.dev/playpen-r2tsls/nginx:v1.0
+                    image: bash:latest
                     shell: Sh
                     command: |
-                      gcloud auth configure-docker europe-docker.pkg.dev -q
+                      #gcloud auth configure-docker europe-docker.pkg.dev -q
 
                       while ! docker ps; do 
                       echo "docker not present"
