@@ -37,7 +37,7 @@ pipeline:
                     projectID: playpen-r2tsls
                     imageName: harness/py-app
                     tags:
-                      - <+pipeline.properties.ci.codebase.build.build.spec.number>
+                      - v1.0
                     dockerfile: BuildApp/Dockerfile
                     context: BuildApp
           sharedPaths:
