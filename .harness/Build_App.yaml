@@ -1,0 +1,43 @@
+pipeline:
+  name: Build App
+  identifier: Build_App
+  projectIdentifier: nexus
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: sritest
+        repoName: Harness-POC
+        build: <+input>
+  stages:
+    - stage:
+        name: Build and Push Python App
+        identifier: Build_and_Push_Python_App
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: Primarycluster
+              namespace: harness-deploy
+              automountServiceAccountToken: true
+              nodeSelector: {}
+              os: Linux
+          execution:
+            steps:
+              - step:
+                  type: BuildAndPushGCR
+                  name: Build and Push PyApp
+                  identifier: Build_and_Push_PyApp
+                  spec:
+                    connectorRef: GCRPlaypen
+                    host: europe-docker.pkg.dev
+                    projectID: playpen-r2tsls
+                    imageName: harness/py-app
+                    tags:
+                      - <+pipeline.executionId>
+                    dockerfile: BuildApp/Dockerfile
+                    context: BuildApp
