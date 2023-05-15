@@ -67,6 +67,10 @@ pipeline:
                         timeout: 10m
                         spec:
                           skipDryRun: false
+                          pruningEnabled: true
+                          delegateSelectors:
+                            - helm-gke-delegate-playpen-primary-region
+                        failureStrategies: []
             rollbackSteps:
               - step:
                   name: Canary Delete
