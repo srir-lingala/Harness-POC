@@ -38,6 +38,6 @@ pipeline:
                     projectID: playpen-r2tsls
                     imageName: harness/py-app
                     tags:
-                      - <+pipeline.properties.ci.codebase.build.build.spec.tag>
+                      - <+pipeline.sequenceId>
                     dockerfile: BuildApp/Dockerfile
                     context: BuildApp
