@@ -33,7 +33,7 @@ pipeline:
                   identifier: Run_1
                   spec:
                     connectorRef: GCRPlaypen
-                    image: europe-docker.pkg.dev/playpen-r2tsls/harness
+                    image: europe-docker.pkg.dev/playpen-r2tsls/nginx
                     shell: Sh
                     command: |
                       #gcloud auth configure-docker europe-docker.pkg.dev -q
