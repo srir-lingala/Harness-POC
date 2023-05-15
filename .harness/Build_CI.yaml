@@ -28,21 +28,16 @@ pipeline:
           execution:
             steps:
               - step:
-                  type: Run
-                  name: Docker Check
-                  identifier: Run_1
+                  type: BuildAndPushGCR
+                  name: BuildAndPushGCR_1
+                  identifier: BuildAndPushGCR_1
                   spec:
                     connectorRef: GCRPlaypen
-                    image: europe-docker.pkg.dev/playpen-r2tsls/harness/nginx
-                    shell: Sh
-                    command: |
-                      #gcloud auth configure-docker europe-docker.pkg.dev -q
-
-                      while ! docker ps; do 
-                      echo "docker not present"
-                      done 
-                      echo "docker ready to use"
-                    imagePullPolicy: Always
+                    host: europe-docker.pkg.dev
+                    projectID: playpen-r2tsls
+                    imageName: harness/nginx
+                    tags:
+                      - v1.0
           sharedPaths:
             - /var/run
             - /var/lib/docker
