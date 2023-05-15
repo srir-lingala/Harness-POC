@@ -41,19 +41,7 @@ pipeline:
                       done 
                       echo "docker ready to use"
                     imagePullPolicy: Always
-              - step:
-                  type: Run
-                  name: Build and Push
-                  identifier: Build_and_Push
-                  spec:
-                    connectorRef: GCRPlaypen
-                    image: google/cloud-sdk:latest
-                    shell: Sh
-                    command: |-
-                      echo <+secrets.getValue("GCPPlaypen")> | base64 -d > tmp.json
-                      glcoud auth activate-service-account --key-file=tmp.json
-
-                      echo Y | gcloud auth configure-docker europe-docker.pkg.dev
           sharedPaths:
             - /var/run
             - /var/lib/docker
+        variables: []
