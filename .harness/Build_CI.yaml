@@ -23,21 +23,15 @@ pipeline:
                       primaryArtifactRef: <+input>
                       sources: <+input>
           environment:
-            environmentRef: playpen
+            environmentRef: PlaypenNonProdPrimary
             deployToAll: false
             infrastructureDefinitions:
-              - identifier: DevPrimary
-                inputs:
-                  identifier: DevPrimary
-                  type: KubernetesDirect
-                  spec:
-                    connectorRef: <+input>
-                    namespace: <+input>
+              - identifier: PrimaryPre
           execution:
             steps:
               - step:
                   type: K8sCanaryDeploy
-                  name: App deployment to Primary Region
+                  name: Python App deployment
                   identifier: K8sCanaryDeploy_1
                   spec:
                     skipDryRun: false
@@ -45,7 +39,7 @@ pipeline:
                       type: Count
                       spec:
                         count: 1
-                  timeout: 10m
+                  timeout: 5m
                   failureStrategies: []
             rollbackSteps:
               - step:
