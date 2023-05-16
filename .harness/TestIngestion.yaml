@@ -1,0 +1,54 @@
+pipeline:
+  projectIdentifier: nexus
+  orgIdentifier: default
+  identifier: TestIngestion
+  name: TestIngestion
+  tags: {}
+  stages:
+    - stage:
+        name: build
+        identifier: build
+        type: CI
+        spec:
+          cloneCodebase: false
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: Primarycluster
+              namespace: harness-deploy
+              automountServiceAccountToken: true
+              nodeSelector: {}
+              os: Linux
+          sharedPaths:
+            - /var/run
+            - /shared/customer_artifacts
+          serviceDependencies:
+            - identifier: dind
+              name: dind
+              type: Service
+              spec:
+                connectorRef: PublicRegistryDocker
+                image: docker:dind
+                privileged: true
+                entrypoint:
+                  - dockerd-entrypoint.sh
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Push Image to GAR
+                  identifier: runTrivy
+                  spec:
+                    connectorRef: PublicRegistryDocker
+                    image: google/cloud-sdk:latest
+                    shell: Sh
+                    command: |
+                      echo <+secrets.getValue("account.GCPPlaypen")> | base64 -d > tmp.json 
+                      gcloud auth activate-service-account --key-file=tmp.json
+                      gcloud auth configure-docker europe-docker.pkg.dev -q
+
+                      docker pull nginx:latest
+
+                      docker tag nginx europe-docker.pkg.dev/playpen-r2tsls/harness/nginx:<+pipeline.sequenceId>
+                      docker push europe-docker.pkg.dev/playpen-r2tsls/harness/nginx:<+pipeline.sequenceId>
+  allowStageExecutions: true
