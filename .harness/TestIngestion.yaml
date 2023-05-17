@@ -52,3 +52,8 @@ pipeline:
                       docker tag nginx europe-docker.pkg.dev/playpen-r2tsls/harness/nginx:<+pipeline.sequenceId>
                       docker push europe-docker.pkg.dev/playpen-r2tsls/harness/nginx:<+pipeline.sequenceId>
   allowStageExecutions: true
+  variables:
+    - name: PublicImageName
+      type: String
+      description: <imageurl>:<tag>
+      value: <+input>
