@@ -50,7 +50,7 @@ pipeline:
                       docker pull <+pipeline.variables.PublicImageName>
 
                       docker tag <+pipeline.variables.PublicImageName> europe-docker.pkg.dev/playpen-r2tsls/harness/<+pipeline.variables.publishimage>:<+pipeline.sequenceId>
-                      docker push europe-docker.pkg.dev/playpen-r2tsls/harness/nginx:<+pipeline.sequenceId>
+                      docker push europe-docker.pkg.dev/playpen-r2tsls/harness/<+pipeline.variables.publishimage>:<+pipeline.sequenceId>
   allowStageExecutions: true
   variables:
     - name: PublicImageName
