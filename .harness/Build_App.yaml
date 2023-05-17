@@ -36,7 +36,7 @@ pipeline:
                     connectorRef: GCRPlaypen
                     host: europe-docker.pkg.dev
                     projectID: playpen-r2tsls
-                    imageName: <+pipeline.variables.image_name>
+                    imageName: harness/<+pipeline.variables.image_name>
                     tags:
                       - <+pipeline.variables.image_tag>
                     dockerfile: BuildApp/Dockerfile
