@@ -61,3 +61,8 @@ pipeline:
                 - AllErrors
               action:
                 type: StageRollback
+  variables:
+    - name: image_name
+      type: String
+      description: "give image name "
+      value: <+input>
