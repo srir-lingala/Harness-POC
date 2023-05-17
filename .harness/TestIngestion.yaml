@@ -57,3 +57,7 @@ pipeline:
       type: String
       description: <imageurl>:<tag>
       value: <+input>
+    - name: publishimage
+      type: String
+      description: ""
+      value: <+input>
