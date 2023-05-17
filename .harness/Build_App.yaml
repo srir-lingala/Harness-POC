@@ -41,3 +41,22 @@ pipeline:
                       - <+pipeline.sequenceId>
                     dockerfile: BuildApp/Dockerfile
                     context: BuildApp
+              - step:
+                  type: AquaTrivy
+                  name: AquaTrivy_1
+                  identifier: AquaTrivy_1
+                  spec:
+                    mode: orchestration
+                    config: default
+                    target:
+                      name: <+pipeline.stages.Container_Build.variables.image_name>
+                      type: container
+                      variant: <+pipeline.stages.Container_Build.variables.image_tag>
+                    advanced:
+                      log:
+                        level: info
+                    privileged: true
+                    image:
+                      type: docker_v2
+                      name: <+pipeline.stages.Container_Build.variables.image_name>
+                      tag: <+pipeline.stages.Container_Build.variables.image_tag>
