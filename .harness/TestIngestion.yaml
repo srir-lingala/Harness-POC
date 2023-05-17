@@ -47,17 +47,17 @@ pipeline:
                       gcloud auth activate-service-account --key-file=tmp.json
                       gcloud auth configure-docker europe-docker.pkg.dev -q
 
-                      docker pull <+pipeline.variables.PublicImageName>
+                      docker pull <+pipeline.variables.PublicImage>
 
-                      docker tag <+pipeline.variables.PublicImageName> europe-docker.pkg.dev/playpen-r2tsls/harness/<+pipeline.variables.publishimage>:<+pipeline.sequenceId>
-                      docker push europe-docker.pkg.dev/playpen-r2tsls/harness/<+pipeline.variables.publishimage>:<+pipeline.sequenceId>
+                      docker tag <+pipeline.variables.PublicImage> europe-docker.pkg.dev/playpen-r2tsls/harness/<+pipeline.variables.PublishImage>:<+pipeline.sequenceId>
+                      docker push europe-docker.pkg.dev/playpen-r2tsls/harness/<+pipeline.variables.PublishImage>:<+pipeline.sequenceId>
   allowStageExecutions: true
   variables:
-    - name: PublicImageName
+    - name: PublicImage
       type: String
       description: <imageurl>:<tag>
       value: <+input>
-    - name: publishimage
+    - name: PublishImage
       type: String
       description: <imagename>
       value: <+input>
