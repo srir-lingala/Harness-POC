@@ -36,27 +36,21 @@ pipeline:
                     connectorRef: GCRPlaypen
                     host: europe-docker.pkg.dev
                     projectID: playpen-r2tsls
-                    imageName: harness/py-app
+                    imageName: <+pipeline.variables.image_name>
                     tags:
-                      - <+pipeline.sequenceId>
+                      - <+pipeline.variables.image_tag>
                     dockerfile: BuildApp/Dockerfile
                     context: BuildApp
-              - step:
-                  type: AquaTrivy
-                  name: AquaTrivy_1
-                  identifier: AquaTrivy_1
-                  spec:
-                    mode: orchestration
-                    config: default
-                    target:
-                      name: <+pipeline.stages.Container_Build.variables.image_name>
-                      type: container
-                      variant: <+pipeline.stages.Container_Build.variables.image_tag>
-                    advanced:
-                      log:
-                        level: info
-                    privileged: true
-                    image:
-                      type: docker_v2
-                      name: <+pipeline.stages.Container_Build.variables.image_name>
-                      tag: <+pipeline.stages.Container_Build.variables.image_tag>
+  variables:
+    - name: image_name
+      type: String
+      description: image name
+      value: <+input>
+    - name: image_tag
+      type: String
+      description: ""
+      value: <+input>
+    - name: repo_name
+      type: String
+      description: ""
+      value: <+input>
