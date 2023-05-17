@@ -47,9 +47,9 @@ pipeline:
                       gcloud auth activate-service-account --key-file=tmp.json
                       gcloud auth configure-docker europe-docker.pkg.dev -q
 
-                      docker pull nginx:latest
+                      docker pull <+pipeline.variables.PublicImageName>
 
-                      docker tag nginx europe-docker.pkg.dev/playpen-r2tsls/harness/nginx:<+pipeline.sequenceId>
+                      docker tag <+pipeline.variables.PublicImageName> europe-docker.pkg.dev/playpen-r2tsls/harness/<+pipeline.variables.publishimage>:<+pipeline.sequenceId>
                       docker push europe-docker.pkg.dev/playpen-r2tsls/harness/nginx:<+pipeline.sequenceId>
   allowStageExecutions: true
   variables:
