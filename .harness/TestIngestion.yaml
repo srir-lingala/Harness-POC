@@ -25,6 +25,16 @@ pipeline:
           execution:
             steps:
               - step:
+                  type: Background
+                  name: DIND
+                  identifier: DIND
+                  spec:
+                    connectorRef: PublicRegistryDocker
+                    image: docker:dind
+                    shell: Sh
+                    entrypoint:
+                      - dockerd-entrypoint.sh
+              - step:
                   type: Run
                   name: Push Image to GAR
                   identifier: runTrivy
@@ -41,16 +51,6 @@ pipeline:
 
                       docker tag <+pipeline.variables.PublicImage> europe-docker.pkg.dev/playpen-r2tsls/harness/<+pipeline.variables.PublishImage>:<+pipeline.sequenceId>
                       docker push europe-docker.pkg.dev/playpen-r2tsls/harness/<+pipeline.variables.PublishImage>:<+pipeline.sequenceId>
-              - step:
-                  type: Background
-                  name: DIND
-                  identifier: DIND
-                  spec:
-                    connectorRef: PublicRegistryDocker
-                    image: docker:dind
-                    shell: Sh
-                    entrypoint:
-                      - dockerd-entrypoint.sh
   allowStageExecutions: true
   variables:
     - name: PublicImage
